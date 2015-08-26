@@ -42,6 +42,10 @@ var options3 = {
   "rejectUnauthorized": false
 };
 
+console.log(options1.path);
+console.log(options2.path);
+console.log(options3.path);
+
 
 var url = 'https://ews.paypalinc.com/rest/IDI_DB_Blocked_sessions_5MIN?max_wait_ms=50&startTime=%27'+yesterday+'%27&endTime=%27'+tomorrow+'%27';
 
@@ -61,7 +65,7 @@ callback1 = function(response) {
 	if(count == 3){
 		callback();
 	}else{
-		console.log(count);
+		//console.log(count);
 	}
 	//console.log(tier1);
   });
@@ -82,7 +86,7 @@ callback2 = function(response) {
 	if(count == 3){
                 callback();
         }else{
-                console.log(count);
+                //console.log(count);
         }
 	//console.log(data[0].data);
   });
@@ -108,9 +112,9 @@ callback3 = function(response) {
         if(count == 3){
                 callback();
         }else{
-                console.log(count);
+                //console.log(count);
         }
-	console.log(sb);
+	//console.log(sb);
   });
 }
 
@@ -123,21 +127,34 @@ var con=[];
 var clu=[];
 	console.log(tier1.length);
 	console.log(tier2.length);
-	console.log(sb.length);
-	for(var i=0;i<tier1.length;i++){
-		console.log(tier1[i][0] +  " | " + tier2[i][0]);
+	for(var i=0, j=0;i<tier1.length && j<tier2.length;){
+		// missing tier2 data, ignore tier1 data points.
+		if(!tier2[i][0] || tier1[i][0] < tier2[j][0]){
+			i++;
+			console.log("ignore tier1");
+			continue;
+		//missing tier1 data, ignore tier2 data points.
+		}else if(tier1[i][0] > tier2[j][0]){
+			j++;
+			console.log("ignore tier2");
+			continue;
+		}
+		
+		//console.log(tier1[i][0] +  " | " + tier2[i][0]);
 		var d = moment(tier1[i][0]*1000).format("HH:mm");
 		x.push(d);
 		t1.push(tier1[i][1]);
 		t2.push(tier2[i][1]);
 		if(sb[tier1[i][0]]){
-			console.log("found");
+			//console.log("found");
 			con.push(sb[tier1[i][0]][0]);
 			clu.push(sb[tier1[i][0]][1]);
 		}else{
 			con.push(0);
                         clu.push(0);
 		}
+		i++;
+		j++;
 	}
 
 	var options = {
@@ -149,11 +166,11 @@ var clu=[];
   	}
 	}
         var req = http.request(options, function(res) {
-  		console.log('STATUS: ' + res.statusCode);
-  		console.log('HEADERS: ' + JSON.stringify(res.headers));
+  		//console.log('STATUS: ' + res.statusCode);
+  		//console.log('HEADERS: ' + JSON.stringify(res.headers));
   		res.setEncoding('utf8');
   		res.on('data', function (chunk) {
-    		console.log('BODY: ' + chunk);
+    		//console.log('BODY: ' + chunk);
   		});
 	});
 	req.write(JSON.stringify({x:x, tier1: t1, tier2: t2, concurrency: con, cluster: clu}));
