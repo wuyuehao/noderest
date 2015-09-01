@@ -47,7 +47,7 @@ console.log(options2.path);
 console.log(options3.path);
 
 
-var url = 'https://ews.paypalinc.com/rest/IDI_DB_Blocked_sessions_5MIN?max_wait_ms=50&startTime=%27'+yesterday+'%27&endTime=%27'+tomorrow+'%27';
+var url = '';
 
 
 callback1 = function(response) {
